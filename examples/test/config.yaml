@@ -1,0 +1,43 @@
+# ========================
+# 🧩 API 配置
+# ========================
+api:
+  api_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibGluaG9uZ2xpbiIsImV4cCI6MTc5ODc2MTYwMH0.mKlttWoQbtkWGNw9UrAGz79m-LPDZHxihp-qSpDeNiA"
+  base_url: "https://10.140.213.96:1020/qwen3-235B/v1"
+
+
+# ========================
+# 🤖 模型与采样参数
+# ========================
+model:
+  model: "qwen"
+  temperature: 0.1
+  top_p: 1.0
+  max_tokens: 2048
+  stream: true
+  thinking: true
+
+
+# ========================
+# ⚙️ 并发与批处理配置
+# ========================
+concurrency:
+  concurrency: 6      # 并发数量
+  write_interval: 1   # 每写入一次的时间间隔（秒）
+  timeout: 60
+  retry: 2
+  request_interval: 0.1
+
+# ========================
+# 📂 输入输出路径
+# ========================
+io:
+  input_dir: "/mnt/dhwfile/raise/user/linhonglin/data_process/api_tool/examples/test.jsonl"
+  output_dir: "outputs/test/"
+  prompt_file: "examples/test/test.txt"
+  key_name: "id"
+
+# ========================
+# 🧠 其他控制选项（可选）
+# ========================
+test_mode: false

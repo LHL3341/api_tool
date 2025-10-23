@@ -1,0 +1,36 @@
+# ========================
+# 🧩 API 配置
+# ========================
+api:
+  api_key: ""
+  base_url: ""
+
+# ========================
+# 🤖 模型与采样参数
+# ========================
+model:
+  model: "qwen3-vl-235b-a22b-thinking"
+  temperature: 0.6
+  top_p: 0.95
+  max_tokens: 16384
+  stream: true
+  thinking: true
+
+# ========================
+# ⚙️ 并发与批处理配置
+# ========================
+concurrency:
+  concurrency: 100
+  request_interval: 0.1
+  timeout: 120
+  retry: 0
+  write_interval: 10
+
+# ========================
+# 📂 输入输出路径
+# ========================
+io:
+  input_file: "/mnt/dhwfile/raise/dcvlr/datasets/HuggingFaceM4__FineVision/subsets/unprocessed_math.parquet"
+  output_dir: "outputs/qwen3vl_math/"
+  prompt_file: "examples/qwen3vl_math/qwen3vl_math.txt"
+  key_name: "global_id"  # 主键字段名，可按需修改

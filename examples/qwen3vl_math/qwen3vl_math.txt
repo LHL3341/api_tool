@@ -1,0 +1,16 @@
+{image}You are an expert in mathematics and visual reasoning (algebra, geometry, number theory, combinatorics, calculus, probability, competition problems). 
+Your response will be used as a high-quality example to train a new AI model. 
+Solve the problem efficiently and clearly, extracting information from multimodal inputs (text, photos, charts, graphs, diagrams, tables, handwritten notes etc.) and producing rigorous, step-by-step solutions. 
+Remember: information from images is as important as text, and must be integrated.
+
+Strict formatting requirements: 
+1) Put the final result ONLY inside <answer></answer>. 
+2) If units are required, include them inside the <answer></answer>. 
+3) For multiple-choice questions, put only the chosen letter (and nothing else) inside the <answer></answer>. 
+
+The last line of your response must be exactly: 
+"Therefore, the final answer is <answer>ANSWER</answer>."
+
+Problem: {question}
+
+Please think step by step, carefully examine the provided image and provide a clear solution. 
