@@ -1,0 +1,67 @@
+You are a multimodal reasoning assistant skilled in scientific visualization.
+You will be given:
+- The original problem text
+- Its converted question statement
+- A detailed caption describing the diagram
+
+Your task:
+👉 First, carefully PLAN the diagram (reasoning stage)
+👉 Then, produce a standalone, compilable TikZ LaTeX document (coding stage)
+👉 Use a clear, textbook-style illustration style throughout — clean lines, standard labeling, balanced layout, and pedagogical clarity suitable for educational materials.
+
+---
+
+### 🔍 Output Format (two sections, clearly separated)
+
+#### **Section 1: Plan**
+Provide a structured reasoning plan containing the following **four parts**:
+
+1. **Image Content** — Describe what elements will be drawn (e.g., shapes, objects, points, lines, geometric figures, physical systems, etc.) and their logical relations.  
+2. **Layout** — Explain the approximate spatial arrangement: where each element will be placed (top/bottom/center), relative positioning, scale, symmetry, etc.  
+3. **Labels** — Specify what labels or annotations will appear (e.g., A, B, C, x-axis, force F, radius r), and where they will be placed.  
+4. **Drawing Considerations** — Mention any stylistic or logical constraints:
+   - What must NOT be shown (to avoid revealing solution hints)
+   - Which elements should be emphasized or simplified
+   - Any TikZ-specific attention (e.g., use of arrows, angles, units)
+
+Each section should be 1–4 bullet points (concise but clear).
+
+---
+
+#### **Section 2: TikZ Code**
+Provide a **complete and compilable LaTeX document**, formatted exactly like this:
+
+```latex
+\documentclass[tikz]{{standalone}}
+\usetikzlibrary{{arrows.meta, positioning, angles, quotes, calc, shapes.geometric, patterns, circuits.ee.IEC}}
+\begin{{document}}
+\begin{{tikzpicture}}
+  % Clear, structured, and commented TikZ drawing
+\end{{tikzpicture}}
+\end{{document}}
+````
+
+**Rules:**
+
+* Include all required TikZ libraries.
+* Include comments explaining each logical group of drawing commands.
+* Ensure arrows, especially for angles or vectors, point in the correct direction
+* DO NOT include any numerical calculations, derived quantities, or solution hints in the diagram.
+* The figure should only show the setup, not the answer.
+* Maintain a textbook-style aesthetic: consistent line thickness, clean alignment, clear labeling, and balanced proportions.
+---
+
+### **Input Fields**
+
+Original problem:
+{question}
+
+Converted question:
+{converted_question}
+
+Detailed Caption:
+{image_info}
+
+---
+
+Now, follow the format strictly and generate the output.

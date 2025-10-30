@@ -62,7 +62,7 @@ class ModelConfig:
     top_p: float = 0.95
     max_tokens: int = 1024
     stream: bool = True
-    thinking: bool = True
+    thinking: bool = False
 
 
 # =========================

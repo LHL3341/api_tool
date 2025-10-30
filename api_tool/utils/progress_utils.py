@@ -8,22 +8,34 @@ from rich.progress import (
     Task,
 )
 from rich.text import Text
+from datetime import timedelta
+from rich.console import Console
 
 
 class AverageTimeRemainingColumn(TimeRemainingColumn):
-    """进度条平均剩余时间列（兼容 rich 版本）"""
-    def render(self, task: Task):
-        # 防护性检查：确保有总量和速度
-        if task.total and task.speed:
-            remaining = (task.total - task.completed) / task.speed
-            # 使用父类的格式化方法（内部方法）
-            # 在某些 rich 版本上 _format_time 可用，若报错请改为自定义格式
-            try:
-                return super()._format_time(remaining)
-            except Exception:
-                # 回退到简单的秒数显示
-                return Text(f"{int(remaining)}s")
-        return super().render(task)
+    """改进版：智能格式化剩余时间（支持 h/m/s 显示）"""
+
+    def render(self, task: Task) -> Text:
+        if not task.total or not task.speed or task.speed <= 0:
+            return Text("Estimating...", style="dim")
+
+        remaining = (task.total - task.completed) / task.speed
+
+        # 友好格式化：>1小时显示 h m；>1分钟显示 m s；否则 s
+        td = timedelta(seconds=int(remaining))
+        total_seconds = int(td.total_seconds())
+
+        if total_seconds >= 3600:
+            hours, remainder = divmod(total_seconds, 3600)
+            minutes = remainder // 60
+            text = f"{hours}h {minutes}m"
+        elif total_seconds >= 60:
+            minutes, seconds = divmod(total_seconds, 60)
+            text = f"{minutes}m {seconds}s"
+        else:
+            text = f"{total_seconds}s"
+
+        return Text(text, style="cyan")
 
 
 class RequestsStatusColumn(TextColumn):
@@ -47,6 +59,7 @@ def create_progress_bar(evaluator=None) -> Progress:
     返回一个 Progress 实例。
     如果传入 evaluator，则会在列中自动加入 RequestsStatusColumn(evaluator)。
     """
+    console = Console(force_terminal=True)
     columns = [
         TextColumn("[bold blue]{task.description}"),
         BarColumn(bar_width=None),
@@ -59,5 +72,5 @@ def create_progress_bar(evaluator=None) -> Progress:
         # 把 RequestsStatusColumn 加在倒数第二个位置（在 AverageTimeRemainingColumn 之前）
         columns.insert(-1, RequestsStatusColumn(evaluator))
 
-    progress = Progress(*columns)
+    progress = Progress(*columns, console=console)
     return progress

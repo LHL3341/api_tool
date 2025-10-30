@@ -1,0 +1,36 @@
+# ========================
+# 🧩 API 配置
+# ========================
+api:
+  api_key: "sk-aApkcXoGAAa9u6PielI0Pa1gYkmA9qqIFxOE7XCKbL7FU3G5"
+  base_url: "http://35.220.164.252:3888/v1"
+
+# ========================
+# 🤖 模型与采样参数
+# ========================
+model:
+  model: "gemini-2.5-flash"
+  temperature: 0.1
+  top_p: 0.95
+  max_tokens: 8192
+  stream: true
+  thinking: false
+
+# ========================
+# ⚙️ 并发与批处理配置
+# ========================
+concurrency:
+  concurrency: 100
+  request_interval: 0.1
+  timeout: 120
+  retry: 0
+  write_interval: 10
+
+# ========================
+# 📂 输入输出路径
+# ========================
+io:
+  input_file: "/mnt/dhwfile/raise/user/linhonglin/vlm/rlpr/results_merged_success_others.jsonl"
+  output_dir: "outputs/gemini_flash_genscore_test/"
+  prompt_file: "examples/gemini_flash_genscore/gencorethink.txt"
+  key_name: "id"  # 主键字段名，可按需修改

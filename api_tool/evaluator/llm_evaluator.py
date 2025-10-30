@@ -11,8 +11,10 @@ from api_tool.utils.progress_utils import create_progress_bar
 from rich.console import Console
 import asyncio
 import traceback
+from queue import Queue
+import json
 
-console = Console()
+console = Console(force_terminal=True)
 
 class LLMEvaluator(BaseEvaluator):
     """LLM-as-Judge 主评估器"""
@@ -49,6 +51,16 @@ class LLMEvaluator(BaseEvaluator):
             console.print("[yellow]⚠️ No data loaded. Check your input_file path.[/yellow]")
             return
 
+        self.prompt_template = Path(self.config.io.prompt_file).read_text(encoding="utf-8")
+        first_item = dataset[0]
+        messages, prompt = self.build_messages(first_item, self.prompt_template)
+
+        # ✅ 打印预览
+        print("\n==== Formatted Prompt ====\n")
+        print(prompt)
+        print("\n==== Messages ====\n")
+        print(messages)
+
         results = []
         sem = asyncio.Semaphore(self.concurrent_limit)
 
@@ -56,25 +68,46 @@ class LLMEvaluator(BaseEvaluator):
         progress = create_progress_bar(self)  # 传 self 会自动插入请求状态列
         overall_task = progress.add_task("[cyan]Evaluating dataset...", total=len(dataset))
 
+        # result_queue = Queue()
+        # output_file = self.output_file
+
+        # ✅ 异步安全写入协程
+        async def writer():
+            """持续从队列写入 JSONL 文件，防止并发冲突"""
+            with open(output_file, "a", encoding="utf-8") as f:
+                while True:
+                    item = await result_queue.get()
+                    if item is None:
+                        break
+                    f.write(json.dumps(item, ensure_ascii=False) + "\n")
+                    f.flush()
+                    result_queue.task_done()
+
+        # writer_task = asyncio.create_task(writer())
+
         async def process_item(item):
             async with sem:
                 self.current_requests += 1
                 self.total_requests_sent += 1
                 try:
-                    template_path = Path(self.config.io.prompt_file)
-                    prompt_template = template_path.read_text(encoding="utf-8")
-                    messages, prompt = self.build_messages(item, prompt_template)
 
-                    response_text, _ = await self._call_model(messages)
-                    
+                    messages, prompt = self.build_messages(item, self.prompt_template)
+
+                    success, response_text = await self._call_model(messages)
+                    if not success:
+                        console.print(f"[yellow]⚠️ Skipped due to error: {response_text}[/yellow]")
+                        return None
+                        
                     key_name = self.config.io.key_name
                     result = {
                         key_name: item[key_name],
                         # "prompt": prompt,
                         "response": response_text,
                         "template": self.config.io.prompt_file,
-                        "token_usage": count_tokens(messages, self.model_name),
                     }
+                    # if not "10.140." in self.config.api.base_url:
+                    #     result["token_usage"] = count_tokens(messages, self.model_name)
+
                     self.total_requests_success += 1
                     return result
                 except Exception as e:
@@ -90,9 +123,12 @@ class LLMEvaluator(BaseEvaluator):
                 res = await coro
                 progress.update(overall_task, advance=1)
                 if res:
+                    # await result_queue.put(res)
                     results.append(res)
                     append_jsonl(res, self.output_file)
 
+        # await result_queue.put(None)
+        # await writer_task
         console.print(f"[bold blue]✅ Evaluation completed. Results saved to {self.output_file}[/bold blue]")
 
     def build_messages(self, item: Dict[str, Any], prompt_template: str) -> Tuple[list, str]:
@@ -156,9 +192,6 @@ class LLMEvaluator(BaseEvaluator):
             config=self.config,
             client=self.client
         )
-
-        response_text = result.get("response", "")
-        raw_stream = getattr(self.stream_handler, "buffer", None)
-        raw_stream_text = "".join(raw_stream) if raw_stream else ""
-
-        return response_text, raw_stream_text
+        if "error" in result:
+            return False, result["error"]
+        return True, result.get("response", "")

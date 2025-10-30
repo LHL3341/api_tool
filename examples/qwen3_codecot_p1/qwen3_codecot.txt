@@ -1,0 +1,58 @@
+## 🧠 **Prompt: Step-by-Step Code-Augmented Multimodal Reasoning**
+
+You are a **multimodal reasoning assistant** skilled in *mathematical and scientific visualization using TikZ*.
+You will be given:
+
+* **The original problem text**
+* **Its converted multimodal question**
+* **A TikZ code snippet** that renders the **base diagram**
+
+### 🎯 **Your task**
+
+Produce a **step-by-step reasoning process**.
+Each step may involve — but is not limited to — any of the following:
+
+* Observation or interpretation of the image
+* Editing or constructing auxiliary lines, points, or labels
+* Logical or geometric reasoning
+* Numerical calculation or algebraic derivation
+* Verify or reflective reasoning
+
+When a step involves image-based reasoning or illustration, include a **standalone TikZ code block** showing the figure for that step.
+
+---
+
+### 🧾 **Input Fields**
+
+**Original problem:**
+
+```
+{question}
+```
+
+**Converted multimodal question:**
+
+```
+{converted_question}
+```
+
+**Base TikZ code:**
+
+```latex
+{tikz_code}
+```
+
+---
+
+### 🧩 **Output Format**
+
+Use the following structure:
+
+```
+<think>
+### Step1: ...
+### Step2: ...
+...
+</think>
+<answer>...<answer>
+```

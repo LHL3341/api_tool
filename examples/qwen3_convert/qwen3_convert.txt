@@ -1,0 +1,67 @@
+**Task Description:**
+Given a **text-only question**, determine whether it can be converted into an **“information-migration multimodal question.”**
+
+**Definition of an information-migration multimodal question:**
+
+* Key **conditions, structures, or relationships** in the question can be clearly represented through an image (e.g., geometric diagrams, force diagrams, chemical reaction schemes, circuit diagrams, function graphs, etc.).
+* In the converted version, these elements are **migrated into the image**, and the **textual part only keeps the core inquiry**, such as “Find…,” “Determine whether…,” etc.
+* If the image would only serve as decoration or cannot represent the main information, then the question is **Unconvertible**.
+
+---
+
+**Output Requirements:**
+
+* If the question is **unconvertible**, output only:
+
+  ```
+  Reason: {{a short explanation of why this question is unconvertible}}
+  Therefore the question is **Unconvertible**
+  ```
+
+* If the question **is convertible**, output in the following format:
+
+  ```
+  Reason: {{a short explanation of why this question is convertible}}
+  Therefore the question is **Convertible**
+  **Converted question**: {{the simplified textual question after migration，remove any conditions that are already represented in the image.}}
+  **Detailed caption**: {{include layout, key conditions, structures, or relationships}}
+  ```
+
+Where:
+
+* **“Detailed caption”** is a detailed textual description that conveys all key elements, conditions, structures, and spatial relationships that need to be visually represented in the image, enabling someone to reconstruct the diagram accurately. Include specific shapes, relative positions, orientations, arrows, labels, or other visual cues as needed (e.g., “positions of points A, B, and C with angle ∠A labeled,” “vectors showing the directions and magnitudes of the three forces acting on a solid circle representing the body,” “H₂ and Cl₂ molecules depicted as connected spheres with arrows showing reaction to form HCl”).
+* **“Converted question”** should:
+  * Start naturally, typically with phrases like “As shown in the figure…,” “Based on the diagram…,” “Find…,” etc.
+  * Remove any conditions, numerical values, or structural descriptions that are already represented in the image.
+  * Ensure that the converted question **depends on the image** to make sense.
+  * For multiple-choice questions, **do not delete the options**.
+
+---
+
+**Examples:**
+
+| Original Text Question                                                                                                    | Judgement     | Caption                                                                                                                                                                                                                                                                                                                    | Converted Question                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| A body is acted upon by three forces: 10 N to the right, 6 N upward, and 8 N to the lower left. Find the resultant force. | Convertible   | A solid rectangle representing the body is drawn at the center. Three vectors originate from the center: one arrow pointing right with magnitude 10 N, one pointing upward with magnitude 6 N, and one pointing to the lower left with magnitude 8 N. Each vector is labeled with its magnitude and direction.            | As shown in the figure, a body is acted upon by three forces. Find the magnitude of the resultant force. |
+| In △ABC, AB = AC and ∠A = 40°. Find ∠B.                                                                                   | Convertible   | Triangle ABC is drawn with vertices labeled A, B, and C. Sides AB and AC are marked as equal. Angle ∠A is labeled as 40°. The triangle is drawn to scale so that the sides and angle visually reflect the given conditions.                                                                                                | As shown in the figure, in △ABC, find ∠B.                                                                |
+| Hydrogen reacts with chlorine to form hydrogen chloride. Write the chemical equation.                                     | Convertible   | The reaction diagram shows two H₂ molecules represented as two pairs of small connected spheres on the left, and one Cl₂ molecule represented as two connected larger spheres. Arrows indicate the combination to form **two HCl molecules**, each shown as a pair of spheres (one H, one Cl) labeled accordingly. | Based on the reaction diagram, write the chemical equation.                                              |
+| Explain the principle of photosynthesis.                                                                                  | Unconvertible | —                                                                                                                                                                                                                                                                                                                          | —                                                                                                        |
+| Why can ice float on water?                                                                                               | Unconvertible | —                                                                                                                                                                                                                                                                                                                          | —                                                                                                        |
+| Calculate the annualized rate of return of an investment.                                                                 | Unconvertible | —                                                                                                                                                                                                                                                                                                                          | —                                                                                                        |
+
+---
+
+** Negative Examples (What *Not* to Do):**
+
+When converting, **do not repeat information in the textual question that has already been migrated into the image**.
+The textual part should rely on the diagram for all descriptive and numerical information.
+
+| ❌ Incorrect Converted Question                                                                                                                                                                                                   | ✅ Correct Converted Question                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| As shown in the figure, a right rectangular prism has a volume of 295.2 cubic inches and a base area of 72.0 square inches. What is the height? ❌ (repeats info)                                                                 | As shown in the figure, what is the height of the right rectangular prism? ✅                    |
+| As shown in the figure, a farm is divided into four equal rectangular regions arranged in a 2×2 grid. Each region has a length of 160 feet and a width of 120 feet. What is the total length of fencing needed? ❌ (repeats info) | As shown in the figure, what is the total length of fencing needed for the entire farm? ✅       |
+| As shown in the figure, which points lie on the circle? ❌ (options A, B, C, D removed)                                                                                                                                           | As shown in the figure, which of the following points lie on the circle? A) P B) Q C) R D) S ✅  |
+
+---
+
+**Question:** {question}

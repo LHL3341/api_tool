@@ -1,0 +1,62 @@
+{image_path}
+You are an **image evaluation expert**.
+Given a **question**, its **converted multimodal version**, and the **generated image**, evaluate how well the image represents the multimodal content and its visual quality. Ignore abstract/mathematical suitability; focus only on **correctness and visual quality**.
+
+---
+
+### Correctness (0–10)
+
+How accurately does the image depict the multimodal question?
+
+* 0–3: Poor — largely incorrect or missing.
+* 4–7: Moderate — mostly correct, some missing/inaccurate details.
+* 8–10: Excellent — fully correct, all visual aspects represented.
+
+---
+
+### Quality (0–10)
+
+Assess visual clarity and construction:
+
+* **Overlap:** Do elements obscure meaning?
+
+* **Layout/spacing:** Are objects proportional and well-spaced?
+
+* **Readability:** Are all components identifiable?
+
+* **Completeness/consistency:** No missing or duplicate parts.
+
+* 0–3: Poor — severe overlaps, unreadable, distorted.
+
+* 4–7: Moderate — mostly clear, minor overlaps/spacing issues.
+
+* 8–10: Excellent — clean, well-spaced, fully readable.
+
+> **Note:** If text/labels overlap and become unreadable, subtract ≥4 points from Quality.
+
+---
+
+## Output Format
+
+1. Provide a short reason summarizing the key justification for your scores.  
+2. Provide your evaluation as a JSON object with two integer fields (0–10).
+
+Example:
+- **Correctness:** Clear depiction of all required elements of the converted multimodal question, only minor missing details.  
+- **Quality:** Labels overlap heavily, layout is confusing, some text unreadable. 
+```json
+{{
+  "Correctness": 8,
+  "Quality": 0
+}}
+````
+
+---
+
+**Original Question:**
+{question}
+
+**Converted Multimodal Question:**
+{converted_question}
+
+**Reason & JSON output:**

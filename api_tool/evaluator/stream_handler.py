@@ -28,6 +28,7 @@ class StreamHandler:
                     continue
                 choice = chunk.choices[0]
                 delta = getattr(choice, "delta", {})
+                # print(delta)
 
                 text_piece = getattr(delta, "content", None)
                 if text_piece:
