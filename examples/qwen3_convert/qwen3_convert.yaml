@@ -30,7 +30,7 @@ concurrency:
 # 📂 输入输出路径
 # ========================
 io:
-  input_file: "/mnt/dhwfile/raise/user/linhonglin/vlm/rlpr/webinstruct.jsonl"
-  output_dir: "outputs/qwen3_convert/"
+  input_file: "/mnt/dhwfile/raise/user/linhonglin/vlm/stages/text_data/megascience.jsonl"
+  output_dir: "outputs/qwen3_convert_megascience/"
   prompt_file: "examples/qwen3_convert/qwen3_convert.txt"
   key_name: "id"  # 主键字段名，可按需修改

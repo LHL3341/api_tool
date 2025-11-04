@@ -31,6 +31,6 @@ concurrency:
 # ========================
 io:
   input_file: "/mnt/dhwfile/raise/user/linhonglin/data_process/api_tool/outputs/qwen3_convert/results_convertable.jsonl"
-  output_dir: "outputs/qwen3_tikzgen2/"
+  output_dir: "outputs/qwen3_tikzgen_megascience/"
   prompt_file: "examples/qwen3_tikzgen/qwen3_tikzgen.txt"
   key_name: "id"  # 主键字段名，可按需修改

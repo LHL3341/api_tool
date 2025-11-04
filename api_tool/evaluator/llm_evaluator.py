@@ -144,6 +144,8 @@ class LLMEvaluator(BaseEvaluator):
 
         # 1️⃣ 先准备一个只包含非图像字段的 item，用于填充模板
         text_item = {k: v for k, v in item.items() if k not in used_image_keys}
+        for key in used_image_keys:
+            prompt_template = re.sub(rf"\{{{key}\}}", "", prompt_template)
 
         # 2️⃣ 填充模板
         formatted_prompt = fill_prompt(prompt_template, text_item)

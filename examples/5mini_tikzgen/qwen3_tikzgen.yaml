@@ -9,10 +9,10 @@ api:
 # 🤖 模型与采样参数
 # ========================
 model:
-  model: "gemini-2.5-flash"
-  temperature: 0.1
+  model: "gpt-5-mini"
+  temperature: 0.6
   top_p: 0.95
-  max_tokens: 8192
+  max_tokens: 16384
   stream: true
   thinking: false
 
@@ -24,13 +24,13 @@ concurrency:
   request_interval: 0.1
   timeout: 120
   retry: 0
-  write_interval: 10
+  write_interval: 30
 
 # ========================
 # 📂 输入输出路径
 # ========================
 io:
-  input_file: "/mnt/dhwfile/raise/user/linhonglin/vlm/datagen/megascience40k.jsonl"
-  output_dir: "outputs/gemini_flash_genscore_megascience/"
-  prompt_file: "examples/gemini_flash_genscore/gencorethink.txt"
+  input_file: "/mnt/dhwfile/raise/user/linhonglin/data_process/api_tool/outputs/qwen3_convert/results_convertable.jsonl"
+  output_dir: "outputs/5mini_tikzgen_megascience/"
+  prompt_file: "examples/5mini_tikzgen/qwen3_tikzgen.txt"
   key_name: "id"  # 主键字段名，可按需修改
