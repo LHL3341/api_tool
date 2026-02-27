@@ -16,6 +16,28 @@ import json
 
 console = Console(force_terminal=True)
 
+import time
+import asyncio
+
+class RateLimiter:
+    """控制请求速率 (Requests Per Minute)"""
+    def __init__(self, max_rpm):
+        self.delay = 60.0 / max_rpm
+        self.lock = asyncio.Lock()
+        self.last_call = 0
+
+    async def wait(self):
+        async with self.lock:
+            now = time.time()
+            # 计算距离上次请求过去了多久
+            elapsed = now - self.last_call
+            wait_time = self.delay - elapsed
+            
+            if wait_time > 0:
+                await asyncio.sleep(wait_time)
+            
+            self.last_call = time.time()
+
 class LLMEvaluator(BaseEvaluator):
     """LLM-as-Judge 主评估器"""
 
@@ -44,6 +66,7 @@ class LLMEvaluator(BaseEvaluator):
         self.current_requests = 0
         self.total_requests_sent = 0
         self.total_requests_success = 0
+        self.rate_limiter = RateLimiter(max_rpm=config.concurrency.rpm)
 
     async def run(self):
         dataset = load_dataset_skip_existing(self.config.io.input_file, self.config.io.output_dir, self.config.io.key_name)
@@ -87,6 +110,7 @@ class LLMEvaluator(BaseEvaluator):
 
         async def process_item(item):
             async with sem:
+                await self.rate_limiter.wait()
                 self.current_requests += 1
                 self.total_requests_sent += 1
                 try:
@@ -99,8 +123,10 @@ class LLMEvaluator(BaseEvaluator):
                         return None
                         
                     key_name = self.config.io.key_name
+                    kept_columns = self.config.io.kept_columns
                     result = {
                         key_name: item[key_name],
+                        **{k: item[k] for k in kept_columns if k in item},
                         # "prompt": prompt,
                         "response": response_text,
                         "template": self.config.io.prompt_file,
@@ -196,4 +222,4 @@ class LLMEvaluator(BaseEvaluator):
         )
         if "error" in result:
             return False, result["error"]
-        return True, result.get("response", "")
+        return True, result["response"]

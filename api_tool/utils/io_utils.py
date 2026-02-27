@@ -22,6 +22,14 @@ def append_jsonl(record: Dict[str, Any], file_path: Union[str, Path]):
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
         f.flush()
 
+def load_json(file_path: Union[str, Path]) -> Dict[str, Any]:
+    """加载 JSON 文件"""
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Dataset file not found: {file_path}")
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
 def load_parquet(file_path: Union[str, Path]) -> List[Dict[str, Any]]:
     """加载 Parquet 文件"""
     path = Path(file_path)
@@ -44,8 +52,10 @@ def load_dataset_skip_existing(
         raise FileNotFoundError(f"Input dataset not found: {input_file}")
 
     # 1️⃣ 加载原始数据集
-    if input_path.suffix.lower() in {".jsonl", ".json"}:
+    if input_path.suffix.lower() in {".jsonl"}:
         dataset = load_jsonl(input_path)
+    elif input_path.suffix.lower() in {".json"}:
+        dataset = load_json(input_path)
     elif input_path.suffix.lower() in {".parquet", ".pq"}:
         dataset = load_parquet(input_path)
     else:

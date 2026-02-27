@@ -48,7 +48,7 @@ class ConcurrencyConfig:
     write_interval: int = 5
     timeout: int = 120
     retry: int = 0
-    request_interval: float = 0.1
+    rpm: int = 1000
 
 
 # =========================
@@ -75,7 +75,7 @@ class IOConfig:
     output_dir: str
     prompt_file: Optional[str] = None
     key_name: str = "id"  # 新增唯一主键字段
-
+    kept_columns: list[str] = field(default_factory=list)
 
 # =========================
 # 🧠 应用总配置

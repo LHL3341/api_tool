@@ -47,7 +47,8 @@ def encode_image_to_base64(image: Union[Path, Image.Image, str, Dict]) -> str:
                 # print(2)
             else:
                 raise TypeError("dict image must contain 'bytes' or 'path'")
-        
+        elif isinstance(image, bytes):
+            img = Image.open(io.BytesIO(image))
         # 2️⃣ Path 类型
         elif isinstance(image, Path):
             mime_type, _ = mimetypes.guess_type(image)
