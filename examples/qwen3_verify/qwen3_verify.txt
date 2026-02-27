@@ -1,5 +1,0 @@
-Reference Answer:
-{answer}
-
-Model's Solution:
-{solution}

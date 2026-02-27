@@ -1,0 +1,42 @@
+# ========================
+# 🧩 API 配置
+# ========================
+api:
+  api_key: ""
+  base_url: "http://35.220.164.252:3888/v1"
+
+# ========================
+# 🤖 模型与采样参数
+# ========================
+model:
+  # model: "qwen3-vl-235b-a22b-thinking"
+  # model: "Qwen/Qwen3-VL-235B-A22B-Thinking"
+  model: "kimi-k2.5"
+  # model: "qwen3-vl-235b-a22b-thinking"
+  # model: "gemini-3-flash-preview-thinking"
+  temperature: 1.
+  top_p: 0.95
+  max_tokens: 16384
+  stream: true
+  thinking: true
+
+# ========================
+# ⚙️ 并发与批处理配置
+# ========================
+concurrency:
+  concurrency: 30
+  rpm: 1000
+  timeout: 120
+  retry: 0
+  write_interval: 30
+
+# ========================
+# 📂 输入输出路径
+# ========================
+io:
+  # input_file: "/mnt/dhwfile/raise/dcvlr/datasets/merged_fail_score_1_hf.parquet"
+  input_file: "/mnt/dhwfile/raise/user/linhonglin/vl_data_process/dataset_collection/mmfinereason/final/fixed/MMFineReason-SFT-123K.parquet"
+  # output_dir: "outputs/gemini_distill_nanobanana_pro/"
+  output_dir: "outputs/kimi_distill_MMFineReason-SFT-123K/"
+  prompt_file: "examples/qwen3vl_distill/distill.txt"
+  key_name: "id"  # 主键字段名，可按需修改

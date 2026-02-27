@@ -1,3 +1,11 @@
 outputs
 *.egg-info
 *py_cache*
+
+# 临时/个人脚本
+compare.py
+filt_spectra.py
+gemini_prompt/
+
+# copy 备份文件
+* copy*
